@@ -67,8 +67,8 @@ class TextLoader():
 
         # Optional text cleaning or make them lower case, etc.
         #data = self.clean_str(data)
-        #x_text = data.split()
-        x_text = list(data)
+        x_text = data.split()
+        #x_text = list(data.replace(' ', ''))
 
         self.vocab, self.words = self.build_vocab(x_text)
         self.vocab_size = len(self.words)
@@ -77,7 +77,7 @@ class TextLoader():
             cPickle.dump(self.words, f)
 
         #The same operation like this [self.vocab[word] for word in x_text]
-        # index of words as our basic data
+       # index of words as our basic data
         self.tensor = np.array(list(map(self.vocab.get, x_text)))
         # Save the data to data.npy
         np.save(tensor_file, self.tensor)
