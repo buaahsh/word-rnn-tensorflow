@@ -8,10 +8,11 @@ import re
 import itertools
 
 class TextLoader():
-    def __init__(self, data_dir, batch_size, seq_length, encoding=None):
+    def __init__(self, data_dir, batch_size, seq_length, encoding=None, vocab=50000):
         self.data_dir = data_dir
         self.batch_size = batch_size
         self.seq_length = seq_length
+        self.vocab = vocab
 
         input_file = os.path.join(data_dir, "input.txt")
         vocab_file = os.path.join(data_dir, "vocab.pkl")
@@ -55,7 +56,7 @@ class TextLoader():
         # Build vocabulary
         word_counts = collections.Counter(sentences)
         # Mapping from index to word
-        vocabulary_inv = [x[0] for x in word_counts.most_common()]
+        vocabulary_inv = [x[0] for x in word_counts.most_common(min(len(word_counts), self.vocab))]
         vocabulary_inv = list(sorted(vocabulary_inv))
         # Mapping from word to index
         vocabulary = {x: i for i, x in enumerate(vocabulary_inv)}
@@ -67,7 +68,7 @@ class TextLoader():
 
         # Optional text cleaning or make them lower case, etc.
         #data = self.clean_str(data)
-        x_text = data.split()
+        x_text = data.replace('\n', ' ').split(' ')
         #x_text = list(data.replace(' ', ''))
 
         self.vocab, self.words = self.build_vocab(x_text)
